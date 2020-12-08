@@ -63,7 +63,7 @@ public class Server {
                     return new Pair<String, Integer>(url, count);
                 })
                 .mapAsync(MAP_ASYNC, req -> {
-                    CompletionStage<Object> stage = Patterns.ask(actor, new GetMessage(req.first()), Duration.ofSeconds(TIME_OUT);
+                    CompletionStage<Object> stage = Patterns.ask(actor, new GetMessage(req.first()), Duration.ofSeconds(TIME_OUT));
                     return stage.thenCompose(res -> {
                         if ((Integer) res >= 0) {
                             return CompletableFuture.completedFuture(new Pair<>(req.first(), (Integer) res));
