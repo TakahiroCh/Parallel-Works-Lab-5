@@ -15,13 +15,15 @@ import akka.pattern.Patterns;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
 
+import org.asynchttpclient.*;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+
+import static org.asynchttpclient.Dsl.asyncHttpClient;
 
 public class Server {
     private static final String HOST = "localhost";
@@ -68,8 +70,10 @@ public class Server {
                                 Flow.<Pair<String, Integer>>create()
                                 .mapConcat(pair -> new ArrayList<>(Collections.nCopies(pair.second(), pair.first())))
                                 .mapAsync(req.second(), url -> {
-                                    Integer start = System.currentTimeMillis();
-                                    async
+                                    long start = System.currentTimeMillis();
+                                    asyncHttpClient().prepareGet(url).execute();
+                                    long finish = System.currentTimeMillis();
+                                    return CompletableFuture.completedFuture((int) (finish - start));
                                 })
                     })
                 })
