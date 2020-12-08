@@ -8,10 +8,9 @@ import akka.http.javadsl.ServerBinding;
 import akka.http.javadsl.model.HttpRequest;
 import akka.http.javadsl.model.HttpResponse;
 import akka.http.javadsl.model.Query;
+import akka.japi.Pair;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
-
-import javafx.util.Pair;
 
 import java.io.IOException;
 import java.util.concurrent.CompletionStage;
@@ -19,6 +18,9 @@ import java.util.concurrent.CompletionStage;
 public class Server {
     private static final String HOST = "localhost";
     private static final int PORT = 8080;
+    private static final String TEST_URL = "testUrl";
+    private static final String COUNT = "count";
+    private static final int MAPASYNC = 8080;
 
     public static void main(String[] args) throws IOException {
         System.out.println("Start!");
@@ -42,9 +44,10 @@ public class Server {
         return Flow.of(HttpRequest.class)
                 .map((req) -> {
                     Query q = req.getUri().query();
-                    String url = q.get("testUrl").get();
-                    int count = Integer.parseInt(q.get("count").get());
+                    String url = q.get(TEST_URL).get();
+                    int count = Integer.parseInt(q.get(COUNT).get());
                     return new Pair<String, Integer>(url, count);
                 })
+                .mapAsync()
     }
 }
