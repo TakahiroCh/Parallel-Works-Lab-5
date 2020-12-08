@@ -78,7 +78,6 @@ public class Server {
                                     long finish = System.currentTimeMillis();
                                     return CompletableFuture.completedFuture((int) (finish - start));
                                 });
-                        System.out.println("here");
                         return Source
                                 .single(req)
                                 .via(flow)
