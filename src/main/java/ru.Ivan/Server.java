@@ -11,12 +11,14 @@ import akka.http.javadsl.model.HttpRequest;
 import akka.http.javadsl.model.HttpResponse;
 import akka.http.javadsl.model.Query;
 import akka.japi.Pair;
+import akka.pattern.Patterns;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.regex.Pattern;
 
 public class Server {
     private static final String HOST = "localhost";
@@ -24,6 +26,7 @@ public class Server {
     private static final String TEST_URL = "testUrl";
     private static final String COUNT = "count";
     private static final int MAP_ASYNC = 2;
+    private static final int TIME_OUT = 7;
 
     public static void main(String[] args) throws IOException {
         System.out.println("Start!");
@@ -44,7 +47,7 @@ public class Server {
                 .thenAccept(unbound -> system.terminate()); //and shutdown when done
     }
 
-    private static Flow<HttpRequest, HttpResponse, NotUsed> createFlow(Http http, ActorSystem system, ActorMaterializer materializer) {
+    private static Flow<HttpRequest, HttpResponse, NotUsed> createFlow(Http http, ActorSystem system, ActorMaterializer materializer, ActorRef actor) {
         return Flow.of(HttpRequest.class)
                 .map((req) -> {
                     Query q = req.getUri().query();
@@ -53,7 +56,13 @@ public class Server {
                     return new Pair<String, Integer>(url, count);
                 })
                 .mapAsync(MAP_ASYNC, req -> {
-                    CompletionStage<Object> stage = Pattern.ask()
+                    CompletionStage<Object> stage = Patterns.ask(actor, new GetMessage(req.first()), Duration.ofSeconds(TIME_OUT);
+                    return stage.thenCompose(res -> {
+                        if ((Integer) res >= 0) {
+                            return CompletableFuture.completedFuture(new Pair<String, Integer>(req.first(), req.second()));
+                        }
+                        
+                    })
                 })
     }
 }
