@@ -5,6 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dcfaf64e-ada4-4b59-b63b-4ad23df49b6f" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/Parallel-Works-Lab-5.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Parallel-Works-Lab-5.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ru.Ivan/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ru.Ivan/Server.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
