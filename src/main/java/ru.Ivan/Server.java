@@ -7,8 +7,11 @@ import akka.http.javadsl.Http;
 import akka.http.javadsl.ServerBinding;
 import akka.http.javadsl.model.HttpRequest;
 import akka.http.javadsl.model.HttpResponse;
+import akka.http.javadsl.model.Query;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
+
+import javafx.util.Pair;
 
 import java.io.IOException;
 import java.util.concurrent.CompletionStage;
@@ -36,6 +39,12 @@ public class Server {
     }
 
     private static Flow<HttpRequest, HttpResponse, NotUsed> createFlow(Http http, ActorSystem system, ActorMaterializer materializer) {
-
+        return Flow.of(HttpRequest.class)
+                .map((req) -> {
+                    Query q = req.getUri().query();
+                    String url = q.get("testUrl").get();
+                    int count = Integer.parseInt(q.get("count").get());
+                    return new Pair<String, Integer>(url, count);
+                })
     }
 }
