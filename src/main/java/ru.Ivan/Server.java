@@ -14,13 +14,14 @@ import akka.stream.javadsl.Flow;
 
 import java.io.IOException;
 import java.util.concurrent.CompletionStage;
+import java.util.regex.Pattern;
 
 public class Server {
     private static final String HOST = "localhost";
     private static final int PORT = 8080;
     private static final String TEST_URL = "testUrl";
     private static final String COUNT = "count";
-    private static final int MAPASYNC = 8080;
+    private static final int MAP_ASYNC = 2;
 
     public static void main(String[] args) throws IOException {
         System.out.println("Start!");
@@ -48,6 +49,8 @@ public class Server {
                     int count = Integer.parseInt(q.get(COUNT).get());
                     return new Pair<String, Integer>(url, count);
                 })
-                .mapAsync()
+                .mapAsync(MAP_ASYNC, req -> {
+                    CompletionStage<Object> stage = Pattern.ask()
+                })
     }
 }
