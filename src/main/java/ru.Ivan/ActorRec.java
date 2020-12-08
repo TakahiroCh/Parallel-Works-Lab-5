@@ -1,6 +1,7 @@
 package ru.Ivan;
 
 import akka.actor.AbstractActor;
+import akka.japi.pf.ReceiveBuilder;
 
 import java.util.HashMap;
 
@@ -9,8 +10,9 @@ public class ActorRec extends AbstractActor {
 
     @Override
     public Receive createReceive() {
-        return null;
+        return ReceiveBuilder
+                .create()
+                .match()
+                .build();
     }
-
-    public Receive
 }
