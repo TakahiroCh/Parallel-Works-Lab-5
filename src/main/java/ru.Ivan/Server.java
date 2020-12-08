@@ -87,6 +87,7 @@ public class Server {
                     });
                 })
                 .map(req -> {
+                    cout
                     actor.tell(new StorageMessage(req.first(), req.second()), ActorRef.noSender());
                     return HttpResponse.create().withEntity(req.first() + '\n');
                 });
