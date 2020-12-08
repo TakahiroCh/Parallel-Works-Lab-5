@@ -88,7 +88,7 @@ public class Server {
                 })
                 .map(req -> {
                     actor.tell(new StorageMessage(req.first(), req.second()), ActorRef.noSender());
-                    return HttpResponse.create().withEntity(req.first() + '\n');
+                    return HttpResponse.create().withEntity(req.second() + '\n');
                 });
     }
 }
