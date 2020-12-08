@@ -38,6 +38,7 @@
   </component>
   <component name="RunManager">
     <configuration name="Server" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="ru.Ivan.Server" />
       <module name="Parallel-Works-Lab-5" />
       <method v="2">
         <option name="Make" enabled="true" />
