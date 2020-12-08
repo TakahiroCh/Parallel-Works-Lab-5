@@ -15,7 +15,9 @@ import akka.pattern.Patterns;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
 
-import org.asynchttpclient.*;
+import akka.stream.javadsl.Keep;
+import akka.stream.javadsl.Sink;
+import akka.stream.javadsl.Source;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -64,7 +66,7 @@ public class Server {
                     CompletionStage<Object> stage = Patterns.ask(actor, new GetMessage(req.first()), Duration.ofSeconds(TIME_OUT);
                     return stage.thenCompose(res -> {
                         if ((Integer) res >= 0) {
-                            return CompletableFuture.completedFuture(new Pair<>(req.first(), res));
+                            return CompletableFuture.completedFuture(new Pair<>(req.first(), (Integer) res));
                         }
                         Flow<Pair<String, Integer>, Integer, NotUsed> flow =
                                 Flow.<Pair<String, Integer>>create()
@@ -74,8 +76,18 @@ public class Server {
                                     asyncHttpClient().prepareGet(url).execute();
                                     long finish = System.currentTimeMillis();
                                     return CompletableFuture.completedFuture((int) (finish - start));
-                                })
-                    })
+                                });
+                        return Source
+                                .single(req)
+                                .via(flow)
+                                .toMat(Sink.fold((int) 0, Integer::sum), Keep.right())
+                                .run(materializer)
+                                .thenApply(sum -> new Pair<>(req.first(),  (sum / req.second())));
+                    });
                 })
+                .map(req -> {
+                    actor.tell(new StorageMessage(req.first(), req.second()), ActorRef.noSender());
+                    return HttpResponse.create().withEntity(req.first() + '\n');
+                });
     }
 }
