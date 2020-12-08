@@ -17,6 +17,9 @@ import akka.stream.javadsl.Flow;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -59,9 +62,15 @@ public class Server {
                     CompletionStage<Object> stage = Patterns.ask(actor, new GetMessage(req.first()), Duration.ofSeconds(TIME_OUT);
                     return stage.thenCompose(res -> {
                         if ((Integer) res >= 0) {
-                            return CompletableFuture.completedFuture(new Pair<String, Integer>(req.first(), req.second()));
+                            return CompletableFuture.completedFuture(new Pair<>(req.first(), res));
                         }
-                        
+                        Flow<Pair<String, Integer>, Integer, NotUsed> flow =
+                                Flow.<Pair<String, Integer>>create()
+                                .mapConcat(pair -> new ArrayList<>(Collections.nCopies(pair.second(), pair.first())))
+                                .mapAsync(req.second(), url -> {
+                                    Integer start = System.currentTimeMillis();
+                                    async
+                                })
                     })
                 })
     }
