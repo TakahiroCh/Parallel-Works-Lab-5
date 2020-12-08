@@ -33,7 +33,7 @@ public class Server {
     private static final String TEST_URL = "testUrl";
     private static final String COUNT = "count";
     private static final int MAP_ASYNC = 2;
-    private static final int TIME_OUT = 20;
+    private static final int TIME_OUT = 5;
 
     public static void main(String[] args) throws IOException {
         System.out.println("Start!");
@@ -87,7 +87,6 @@ public class Server {
                     });
                 })
                 .map(req -> {
-                    cout
                     actor.tell(new StorageMessage(req.first(), req.second()), ActorRef.noSender());
                     return HttpResponse.create().withEntity(req.first() + '\n');
                 });
