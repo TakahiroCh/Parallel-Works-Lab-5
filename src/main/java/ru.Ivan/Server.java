@@ -60,6 +60,7 @@ public class Server {
                     Query q = req.getUri().query();
                     String url = q.get(TEST_URL).get();
                     int count = Integer.parseInt(q.get(COUNT).get());
+                    System.out.println(url + " " + count);
                     return new Pair<String, Integer>(url, count);
                 })
                 .mapAsync(MAP_ASYNC, req -> {
